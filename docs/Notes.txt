@@ -1,0 +1,102 @@
+==================================================
+SIMPLEFIED UML
+==================================================
+model/User:
+    - username (uniek id)
+    - dateOfAccountCreation
+    - currency
+
+    - addCurrency
+    - removeCurrency
+
+model/SlotMachine:
+    - playSlots
+
+data/UserRepository:
+    - users (List)
+
+    - addUser
+    - get
+    - remove
+
+data/PasswordRepository:
+    - passwords (Map: username - password)
+
+    - add
+    - get
+    - remove
+    - replace
+    - checkValidUsernamePassword
+    - checkIfUsernameAlreadyExists
+
+config/SessionSettings:
+    - static currentUser
+
+view/Identifier:
+    - identifyUser
+
+view/Menu:
+    - askIfUserWantsToPlay
+==================================================
+Verloop van de programma
+==================================================
+
+user moet zich kunnen inloggen of registreren
+user speel een rondje slots
+herhaal de vorige stap tot de user het beu is
+
+==================================================
+Interne logica
+==================================================
+
+app/CasinoApp.java -> main():
+    - identifyUser() : view/Identifier.java
+    - loop:
+        - askIfUserWantsToPlay() : view/Menu.java
+            - yes: playSlots() : model/SlotMachine.java
+            - no: exit
+
+view/Identifier.java -> identifyUser():
+    - ask the user if he wants to log in or register
+        - if login: logIn()
+        - if register: register()
+        - else: ask again
+    set currentUser
+
+view/Identifier.java -> logIn():
+    - Ask the user for username and password
+    - checkValidUsernamePassword() : data/PasswordRepository.java
+        - if valid: return user
+        - else: show error, ask again
+
+view/Identifier.java -> register():
+    - Ask the user for username, password, confirm password
+    - check if password and confirmed password are the same
+    - checkIfUsernameAlreadyExists() : data/PasswordRepository.java
+        - if already exists: Show error message, ask again
+        - if not exist: 
+            - addUser() : data/UserRepository
+            - return user
+
+data/UserRepository.java -> addUser():
+    - create user
+    - add 100 euro
+    - add user to the list
+    
+
+view/Menu.java -> askIfUserWantsToPlay():
+    - ask user if he wants to play slots.
+        - if yes: return true
+        - if no : return false
+        - else : ask again
+
+model/SlotMachine.java -> playSlots():
+    - checkIfUserHasEnoughMoney() 
+        - if yes: continue
+        - if no: return
+    - removeCurrency(5) : model/User.java
+    - generate a number between 0-100:
+        - if number <16: 
+            - user won 
+            - addCurrency(10) : model/User.java
+        - else: user lost, show message.

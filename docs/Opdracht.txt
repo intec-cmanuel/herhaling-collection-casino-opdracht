@@ -1,0 +1,21 @@
+User:
+    - login
+    - registreren
+
+when user is logged in:
+    - play slots
+    - uitloggen
+    - passwoord veranderen
+    - uitschrijven
+
+when playing slots:
+    - 5 euro om te spelen
+    - win: 10euro 
+    - verlies: message: je bent verloren
+
+on account creation:
+    - geef de user 100 euro
+
+Saving data:
+    - repository voor users
+    - repository voor password
